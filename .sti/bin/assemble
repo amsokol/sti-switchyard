@@ -1,0 +1,46 @@
+#!/bin/bash -e
+#
+# S2I assemble script for the 'sti-labs-golang1' image.
+# The 'assemble' script builds your application source ready to run.
+#
+# For more information refer to the documentation:
+#	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+
+if [ "$1" = "-h" ]; then
+	# If the 'sti-labs-golang1' assemble script is executed with '-h' flag,
+	# print the usage.
+	exec /usr/local/sti/usage
+fi
+
+# Restore artifacts from the previous build (if they exist).
+#
+if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+  echo "---> Restoring build artifacts"
+  mv /tmp/artifacts/. ./
+fi
+
+echo "---> Installing application source"
+mkdir -p ./github.com/amsokol/sti-labs-golang1
+cp -Rf /tmp/src/. ./github.com/amsokol/sti-labs-golang1/
+
+echo "---> Building application from source"
+# Add build steps for your application, eg npm install, bundle install
+mkdir -p $GOPATH/src/github.com/bradfitz
+git clone https://github.com/bradfitz/http2.git $GOPATH/src/github.com/bradfitz/http2
+
+mkdir -p $GOPATH/src/github.com/labstack
+git clone https://github.com/labstack/gommon.git $GOPATH/src/github.com/labstack/gommon
+git clone https://github.com/labstack/echo.git $GOPATH/src/github.com/labstack/echo
+
+mkdir -p $GOPATH/src/github.com/thoas
+git clone https://github.com/thoas/stats.git $GOPATH/src/github.com/thoas/stats
+
+mkdir -p $GOPATH/src/github.com/tylerb
+git clone https://github.com/tylerb/graceful.git $GOPATH/src/github.com/tylerb/graceful
+
+mkdir -p $GOPATH/src/golang.org/x
+git clone https://github.com/golang/net.git $GOPATH/src/golang.org/x/net
+
+cd ./github.com/amsokol/sti-labs-golang1/
+go build
