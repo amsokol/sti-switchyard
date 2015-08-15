@@ -6,3 +6,5 @@
 # For more information see the documentation:
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
+
+exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
