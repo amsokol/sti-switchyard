@@ -8,7 +8,7 @@
 #
 
 if [ "$1" = "-h" ]; then
-	# If the 'sti-labs-golang1' assemble script is executed with '-h' flag,
+	# If the 'sti-switchyard' assemble script is executed with '-h' flag,
 	# print the usage.
 	exec /usr/local/sti/usage
 fi
@@ -21,7 +21,9 @@ if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
 fi
 
 echo "---> Installing application source"
-cp -Rf /tmp/src/. ./
+cp -Rf /opt/s2i/destination/src/. ./
 
 echo "---> Building application from source"
 # Add build steps for your application, eg npm install, bundle install
+mvn clean package
+mv ./target/*.jar $JBOSS_HOME/standalone/deployments/

@@ -7,4 +7,22 @@
 #	https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
 #
 
-exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+#exec /wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+exec java -D[Standalone] \
+    -server \
+    -Xms64m \
+    -Xmx512m \
+    -XX:MaxPermSize=256m \
+    -Dfile.encoding=UTF-8 \
+    -Djava.net.preferIPv4Stack=true \
+    -Djboss.modules.system.pkgs=org.jboss.byteman \
+    -Djava.awt.headless=true \
+    -Dorg.jboss.boot.log.file=$JBOSS_HOME/standalone/log/server.log \
+    -Dlogging.configuration=file:$JBOSS_HOME/standalone/configuration/logging.properties \
+    -jar \
+    $JBOSS_HOME/jboss-modules.jar \
+    -mp \
+    $JBOSS_HOME/modules \
+    org.jboss.as.standalone \
+    -Djboss.home.dir=$JBOSS_HOME \
+    -Djboss.server.base.dir=$JBOSS_HOME/standalone
